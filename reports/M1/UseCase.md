@@ -1,0 +1,13 @@
+
+| Mục              | Nội dung                                                                                                                                           |
+|------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| **ID**           | UC_01                                                                                                                                              |
+| **Name**         | Upload File                                                                                                                                        |
+| **Description**  | Upload file lên hệ thống                                                                                                                           |
+| **Actor**        | Sender (Primary), Telegram Bot, Backend System, Storage Service                                                                                   |
+| **Precondition** | Bot đã được khởi động và đã có File muốn gửi                                                                                                       |
+| **Postcondition**| File được lưu trữ và sẵn sàng để gửi                                                                                                               |
+| **Trigger**      | Không có                                                                                                                                           |
+| **Normal Flow**  | 1. Sender gọi /upload  <br> 2. Bot xử lý lệnh và gọi đến API Request Upload URL <br> 3. Bot gọi POST /v1/files <br> 4. BE tạo bản ghi file tạm thời và presigned URL <br> 5.1 Bot nhận link <br> 5.2 Bot tạo format upload (hiệu lực 15p, max 100MB, pdf/doc/png/...) <br> 5.3 Bot gửi presigned url cho Sender <br> 6. Sender click vào url và upload file <br> 7. Bot gọi PUT để upload vào Storage Service <br> 8. Sender ấn nút xác nhận <br> 9. Bot gọi POST /v1/files/:id/complete <br> 10. BE đánh dấu hoàn tất <br> 11. Bot hiển thị đã upload thành công |
+| **Alternative Flow** | **Tại bước 6:** <br> 6.1 Sender click link hết hạn <br> 6.2 Bot báo link đã hết hiệu lực <br> 6.3 Quay lại B1 <br><br> **Tại bước 7:** <br> 7.1 Sender upload file quá lớn <br> 7.2 Storage Service từ chối <br> 7.3 Bot hiển thị File quá lớn (Max 100MB) <br> 7.4 Quay lại B1 <br><br> **Tại bước 9:** <br> 9.1 Mất kết nối trong lúc upload <br> 9.2 Sender ấn reload <br> 9.3 Sau 5p BE cleanup nếu không kết nối <br> 9.4 Quay lại B6 |
+| **Exception Flow** | Không có                                                                                                                                        |
