@@ -114,7 +114,7 @@ Mỗi luồng được xây dựng để đảm bảo **tính đơn giản, bả
 
 |     **Field**      |                                                                 **Content**                                                                                                     |
 |--------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **ID**             | UC-REVOKE                                                                                                                                                                  |
+| **ID**             | UC-03                                                                                                                                                                  |
 | **Name**           | Revoke Share Link (Thu hồi link chia sẻ)                                                                                                                                        |
 | **Description**    | Sender gửi yêu cầu thu hồi link chia sẻ qua Telegram Bot. Bot chuyển tiếp yêu cầu đến Backend API để xác thực, kiểm tra quyền sở hữu và đánh dấu link bị thu hồi bằng cách cập nhật trường `revoked_at`. |
 | **Actor**          | Sender (Primary), Telegram Bot, Backend Service                                                                                                                                |
@@ -162,6 +162,7 @@ Mỗi luồng được xây dựng để đảm bảo **tính đơn giản, bả
 | **Normal Flow**    | B1: Receiver nhấn vào link chia sẻ.<br> B2: Bot nhận diện link, gọi BE để kiểm tra link hợp lệ, còn hạn và người này có trong danh sách được nhận không.<br> B3: Bot gửi yêu cầu nhập mật khẩu/TOTP.<br> B4: Receiver nhập và gửi mật khẩu/TOTP.<br> B5: Bot gửi toàn bộ thông tin xác thực (mật khẩu/TOTP) đến BE.<br> B6: BE xác nhận mọi thứ (mật khẩu/TOTP, lượt tải) hợp lệ và gửi lại access token tạm thời.<br> B7: Bot dùng token để lấy file từ BE và gửi thẳng cho Receiver. |
 | **Alternative Flow** | **Trường hợp link công khai (không yêu cầu mật khẩu/TOTP) (ở bước 2):**<br> B2.1: Bot kiểm tra và thấy link không yêu cầu mật khẩu/TOTP (BE vẫn kiểm tra lượt tải).<br> B2.2: Bot gửi file cho Receiver. |
 | **Exception Flow** | **Link hết hạn hoặc bị thu hồi (ở bước 2):**<br> B2.1: Khi Bot gọi BE để kiểm tra, BE phản hồi lỗi.<br> B2.2: Bot hiển thị thông báo link không còn tồn tại.<br><br> **Receiver nhập sai mật khẩu/TOTP (ở bước 6):**<br> B6.1: Khi BE xác thực thông tin, BE phát hiện Mật khẩu/TOTP không chính xác.<br> B6.2: BE trả lỗi và Bot hiển thị thông báo mật khẩu/TOTP không đúng. <br> B6.3: Quay lại bước B3.<br><br> **Hết lượt tải (Max downloads) (ở bước 6):**<br> B6.1: BE xác thực Mật khẩu/TOTP thành công, nhưng kiểm tra thấy hết lượt tải.<br> B6.2: BE trả lỗi và Bot hiển thị thông báo link đã đạt tối đa số lượt tải. |
+
 
 
 
