@@ -7,8 +7,8 @@ Bot được viết bằng **Go**, giao tiếp trực tiếp với **Telegram Bo
 | Họ tên                      | Vai trò                                                                                   |
 | --------------------------- | ----------------------------------------------------------------------------------------- |
 | Nguyễn Nguyên Ngọc (Leader) | Tổng hợp và tạo file sườn, sync data giữa FE và BE, hỗ trợ thành viên, use case (share)   |
-| Bùi Cung                    | Làm requirement (non-functional), use case (upload), xử lý command về upload (dự tính)    |
-| Trí Thành                   | Làm requirement (non-functional), use case (revoke), xử lý command về revoke (dự tính)    |
+| Bùi Hoàng Cung              | Làm requirement (non-functional), use case (upload), xử lý command về upload (dự tính)    |
+| Võ Trí Thành                | Làm requirement (non-functional), use case (revoke), xử lý command về revoke (dự tính)    |
 | Võ Hùng Dũng                | Làm requirement (non-functional), use case (download), xử lý command về download (dự tính)|
 
 ---
@@ -138,4 +138,5 @@ git push origin dev:<ten-tinh-nang>
 ### 6. Merge & dọn nhánh
 ```bash
 git push origin --delete <ten-tinh-nang>
+
 ```
