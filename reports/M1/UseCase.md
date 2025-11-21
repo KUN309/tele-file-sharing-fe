@@ -70,6 +70,36 @@ Mỗi luồng được xây dựng để đảm bảo **tính đơn giản, bả
 
 ## Revoke Link
 ### Nội dung:
-
+Field,Content
+ID,UC-REVOKE-01
+Name,Thu hồi link chia sẻ (Revoke Share Link)
+Description,"Người gửi yêu cầu thu hồi link chia sẻ thông qua Bot Telegram. Bot chuyển tiếp yêu cầu đến Backend API để xác thực, kiểm tra quyền sở hữu và cập nhật trạng thái link (revoked)."
+Actor,"Người gửi (Primary), Bot Telegram (Bot FE), Backend Service"
+Preconditions,B1: Người gửi đã được xác thực (có bản ghi user tương ứng với telegram_user_id).
+,B2: Tồn tại bản ghi chia sẻ (share_id) trong hệ thống.
+,B3: Link đang ở trạng thái hoạt động (revoked_at IS NULL).
+,B4: Người gửi là chủ sở hữu của link (share.owner_user_id = user.id).
+Postconditions,B1: Link chia sẻ được đánh dấu đã thu hồi (revoked_at có giá trị thời gian).
+,B2: Người nhận không thể truy cập hoặc tải file (trả lỗi 410 hoặc 404).
+Triggers,Người gửi kích hoạt lệnh thu hồi qua Bot Telegram (/myshare -> /revoke).
+Normal Flow,B1: Người gửi ra lệnh thu hồi link chia sẻ thông qua Bot (lệnh /revoke).
+,B2: Bot gửi yêu cầu đến Backend API (kèm thông tin xác thực Bot & User).
+,"B3: Backend xác thực API Key Bot, xác định User qua Telegram ID và truy vấn dữ liệu link."
+,B4: Hệ thống kiểm tra quyền sở hữu và trạng thái hiện tại của link.
+,"B5: Backend cập nhật cơ sở dữ liệu, đánh dấu link đã bị thu hồi (revoked_at)."
+,B6: Bot nhận phản hồi thành công và thông báo cho người gửi.
+Alternative Flow,Không có.
+Exception Flow,Xác thực thất bại (ở bước 3):
+,B3b.1: Bot không được cấp phép hoặc thiếu thông tin xác thực.
+,B3b.2: Backend trả lỗi xác thực (401/403).
+,Link không tồn tại (ở bước 3):
+,B3a.1: Hệ thống không tìm thấy share_id tương ứng.
+,"B3a.2: Bot báo lỗi ""Không tìm thấy link chia sẻ."""
+,Người gửi không có quyền (ở bước 4):
+,B4a.1: Người yêu cầu không phải chủ sở hữu (owner_user_id không khớp).
+,"B4a.2: Bot báo lỗi ""Bạn không có quyền thu hồi link này."""
+,Link đã bị thu hồi trước đó (ở bước 4):
+,B4b.1: Link đã ở trạng thái revoked_at IS NOT NULL.
+,"B4b.2: Bot thông báo ""Link này đã được thu hồi trước đó."""
 ## Download File
 ### Nội dung
