@@ -150,43 +150,19 @@ Mỗi luồng được xây dựng để đảm bảo **tính đơn giản, bả
 ### Nội dung:
 Đảm nhiệm bởi Hùng Dũng
 
-|     **Field**      |                                                                 **Content**                                                                                                     |
-|--------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **ID**             | UC_04                                                                                                                                                                          |
-| **Name**           | Download FIle                                                                                                                                                                      |
-| **Description**    | Receiver truy cập vào một link chia sẻ, xác thực (nếu được yêu cầu), và tải tệp tin về thiết bị của mình thông qua Telegram Bot.        |
-| **Actor**          | Receiver (Primary), Telegram Bot, Backend Service                                                                                                                                 |
-|**Preconditions**   | B1: Sender đã upload tệp tin thành công.                                                                                                                         |
-|                    | B2: Sender đã tạo một link chia sẻ trỏ tới tệp tin đó.                                                                                                                     |
-|                    | B3: Receiver đã nhận được link chia sẻ.
-                                                                                                                       |
-|**Postconditions**  | B1: Receiver nhận được tệp tin qua tin nhắn Telegram.                                                                                                                            |
-|                    | B2: Một bản ghi truy cập thành công được lưu vào.
-                                                                                                                                                  |
-|                    | B3: Bộ đếm của link chia sẻ được tăng lên 1.                                                                                                                                      |
-| **Triggers**       | Receiver nhấn vào một link chia sẻ của bot.                                                                                                                         |
-| **Normal Flow**    | B1: Receiver nhấn vào link chia sẻ.
-                                                                                                                                |
-|                    | B2: Bot nhận diện link, tự động gọi BE để kiểm tra xem link có hợp lệ, còn hạn và người này có trong danh sách được nhận không.                                                                                                                                |
-|                    | B3: Bot gửi yêu cầu nhập mật khẩu/TOTP.                                                                                                                               |
-|                    | B4: Receiver nhập và gửi mật khẩu/TOTP.                                                                                                                     |
-|                    | B5: Bot gửi toàn bộ thông tin xác thực (mật khẩu/TOTP) đến BE.                                                                                                                                     |
-|                    | B6: BE xác nhận mọi thứ (mật khẩu/TOTP, lượt tải) đều chính xác và gửi lại "tín hiệu cho phép" (access token tạm thời) cho Bot.                                                                                                                                             |
-|                    | B7: Bot ngay lập tức dùng "tín hiệu" đó để lấy file từ BE và gửi thẳng file đó cho Receiver.                                                                                                                                         |
-|**Alternative Flow**| **Trường hợp link không yêu cầu mật khẩu/TOTP (Công khai) (ở bước 2):**                                                                                                                                         |
-|                    | B2.1: Bot kiểm tra và thấy link không yêu cầu mật khẩu/TOTP (BE vẫn kiểm tra lượt tải).                                                                                                                                       |
-|                    | B2.2: Bot gửi file cho Receiver.
-                                                                                                                   |
-| **Exception Flow** | **Link hết hạn hoặc bị thu hồi (ở bước 2):**                                                                                                                                              |
-|                    | B2.1: Khi Bot gọi BE để kiểm tra, BE phản hồi lỗi.                                                                                                                                                       |
-|                    | B2.2: Bot hiển thị thông báo link không còn tồn tại.                                                                                                                             |
-|                    | **Receiver nhập sai mật khẩu/TOTP (ở bước 6):**                                                                                                                               |
-|                    | B6.1: Khi BE xác thực thông tin, BE phát hiện Mật khẩu/TOTP không chính xác.                                                                                                                                             |
-|                    | B6.2: BE trả lỗi và Bot hiển thị thông báo mật khẩu/TOTP không đúng.                                                                                                                                 |
-|                    | B6.3: Quay trở lại B3.                                                                                                                                 |
-|                    | **Hết lượt tải (Max downloads) (ở bước 6):**                                                                                                                                                        |
-|                    | B6.1: BE xác thực Mật khẩu/TOTP thành công, nhưng kiểm tra thấy hết lượt tải. 
-                                                                                                                                                       |
-|                    | B6.2: BE trả lỗi và Bot hiển thị thông báo link đã đạt tối đa số lượt tải.                                                                                                                                |
+| **Field**          | **Content** |
+|--------------------|-------------|
+| **ID**             | UC_04 |
+| **Name**           | Download File |
+| **Description**    | Receiver truy cập vào một link chia sẻ, xác thực (nếu được yêu cầu), và tải tệp tin về thiết bị của mình thông qua Telegram Bot. |
+| **Actor**          | Receiver (Primary), Telegram Bot, Backend Service |
+| **Preconditions**  | B1: Sender đã upload tệp tin thành công.<br> B2: Sender đã tạo một link chia sẻ trỏ tới tệp tin đó.<br> B3: Receiver đã nhận được link chia sẻ. |
+| **Postconditions** | B1: Receiver nhận được tệp tin qua tin nhắn Telegram.<br> B2: Một bản ghi truy cập thành công được lưu vào.<br> B3: Bộ đếm của link chia sẻ được tăng lên 1. |
+| **Triggers**       | Receiver nhấn vào một link chia sẻ của bot. |
+| **Normal Flow**    | B1: Receiver nhấn vào link chia sẻ.<br> B2: Bot nhận diện link, gọi BE để kiểm tra link hợp lệ, còn hạn và người này có trong danh sách được nhận không.<br> B3: Bot gửi yêu cầu nhập mật khẩu/TOTP.<br> B4: Receiver nhập và gửi mật khẩu/TOTP.<br> B5: Bot gửi toàn bộ thông tin xác thực đến BE.<br> B6: BE xác nhận mọi thứ hợp lệ và gửi lại access token tạm thời.<br> B7: Bot dùng token để lấy file từ BE và gửi cho Receiver. |
+| **Alternative Flow** | **Trường hợp link công khai (không yêu cầu mật khẩu/TOTP):**<br> B2.1: Bot kiểm tra và thấy link không yêu cầu mật khẩu/TOTP.<br> B2.2: Bot gửi file cho Receiver. |
+| **Exception Flow** | **Link hết hạn hoặc bị thu hồi:**<br> B2.1: BE phản hồi lỗi khi Bot kiểm tra link.<br> B2.2: Bot hiển thị thông báo link không còn tồn tại.<br><br> **Receiver nhập sai mật khẩu/TOTP:**<br> B6.1: BE phát hiện mật khẩu/TOTP không chính xác.<br> B6.2: Bot hiển thị thông báo mật khẩu/TOTP không đúng.<br> B6.3: Quay lại bước B3.<br><br> **Hết lượt tải (Max downloads):**<br> B6.1: BE xác thực thành công nhưng lượt tải đã hết.<br> B6.2: Bot hiển thị thông báo link đã đạt tối đa số lượt tải. |
+
+
 
 
