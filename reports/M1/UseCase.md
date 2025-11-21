@@ -70,6 +70,39 @@ Mỗi luồng được xây dựng để đảm bảo **tính đơn giản, bả
 
 ## Revoke Link
 ### Nội dung:
+|     **Field**      |                                                                 **Content**                                                                                                     |
+|--------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **ID**             | UC-REVOKE-01                                                                                                                                                                    |
+| **Name**           | Revoke Share Link (Thu hồi link chia sẻ)                                                                                                                                        |
+| **Description**    | Sender gửi yêu cầu thu hồi link chia sẻ qua Telegram Bot. Bot chuyển tiếp yêu cầu đến Backend API để xác thực, kiểm tra quyền sở hữu và đánh dấu link bị thu hồi bằng cách cập nhật trường `revoked_at`. |
+| **Actor**          | Sender (Primary), Telegram Bot, Backend Service                                                                                                                                |
+| **Preconditions**  | B1: Sender đã được xác thực trong hệ thống (tồn tại user có `telegram_user_id`).                                                                                                |
+|                    | B2: Bản ghi share có `share_id` tồn tại trong bảng `shares`.                                                                                                                    |
+|                    | B3: Link đang hoạt động (`revoked_at IS NULL`).                                                                                                                                 |
+|                    | B4: Sender là chủ sở hữu của link (`share.owner_user_id = user.id`).                                                                                                            |
+| **Postconditions** | B1: Link được đánh dấu thu hồi (`revoked_at` có timestamp).                                                                                                                     |
+|                    | B2: Người nhận không thể truy cập link nữa.                                                                                                                                      |
+|                    | B3: Mọi request truy cập sau đó trả lỗi 410 hoặc 404.                                                                                                                            |
+| **Triggers**       | Sender dùng lệnh `/myshare` → `/revoke` trên Telegram.                                                                                                                          |
+| **Normal Flow**    | B1: Sender thực hiện lệnh `/revoke`.                                                                                                                                            |
+|                    | B2: Bot gửi yêu cầu thu hồi kèm thông tin xác thực đến Backend.                                                                                                                 |
+|                    | B3: Backend xác thực API Key và định danh user từ Telegram ID.                                                                                                                   |
+|                    | B4: Backend kiểm tra quyền sở hữu và trạng thái link.                                                                                                                            |
+|                    | B5: Nếu hợp lệ, Backend cập nhật DB để đánh dấu link đã thu hồi.                                                                                                                |
+|                    | B6: Bot nhận phản hồi và thông báo cho Sender.                                                                                                                                   |
+| **Alternative Flow** | Không có.                                                                                                                                                                     |
+| **Exception Flow** | **Link không tồn tại (ở bước 3):**                                                                                                                                               |
+|                    | B3a.1: Backend không tìm thấy bản ghi share.                                                                                                                                     |
+|                    | B3a.2: Bot báo "Link không tồn tại."                                                                                                                                             |
+|                    | **Người gửi không có quyền (ở bước 4):**                                                                                                                                         |
+|                    | B4a.1: Sender không phải chủ sở hữu.                                                                                                                                             |
+|                    | B4a.2: Bot báo "Bạn không có quyền thu hồi link này."                                                                                                                            |
+|                    | **Link đã được thu hồi trước đó (ở bước 4):**                                                                                                                                    |
+|                    | B4b.1: `revoked_at` đã có giá trị.                                                                                                                                               |
+|                    | B4b.2: Bot báo "Link này đã được thu hồi trước đó."                                                                                                                              |
+|                    | **Xác thực thất bại (ở bước 3):**                                                                                                                                                 |
+|                    | B3b.1: API Key hoặc thông tin xác thực không hợp lệ.                                                                                                                             |
+|                    | B3b.2: Bot báo "Không thể xác thực yêu cầu."                                                                                                                                     |
 
 ## Download File
 ### Nội dung
