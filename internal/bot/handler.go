@@ -64,7 +64,7 @@ func (b *Bot) commandMe(upd tgbotapi.Update) {
 }
 
 func (b *Bot) commandFiles(upd tgbotapi.Update) {
-	files, err := b.Client.GetMyFiles()
+	files, err := b.Client.ListFiles()
 	if err != nil {
 		b.reply(upd, "Lỗi xuất danh sách: "+err.Error())
 		return
@@ -110,7 +110,7 @@ func (b *Bot) handleUpload(upd tgbotapi.Update) {
 		MimeType:       doc.MimeType,
 	}
 
-	resp, err := b.Client.CreateUpload(req)
+	resp, err := b.Client.UploadFile(req)
 	if err != nil {
 		b.reply(upd, "Lỗi tải lên: "+err.Error())
 		return

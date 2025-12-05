@@ -35,7 +35,7 @@ type UploadFileRequest struct {
 }
 
 type UploadFileResponse struct {
-	FileID    int    `json:"file_id"`
+	FileID    int64  `json:"file_id"`
 	Status    string `json:"status"`
 	UploadURL string `json:"upload_url"`
 }

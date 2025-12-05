@@ -11,7 +11,7 @@ import (
 
 type Client struct {
 	BaseURL    string
-	HttpClient *http.Client
+	HTTP       *http.Client
 	TelegramID int64
 	Username   string
 }
@@ -22,7 +22,7 @@ func NewClient(baseURL string, telegramID int64, username string, httpClient *ht
 	}
 	return &Client{
 		BaseURL:    baseURL,
-		HttpClient: httpClient,
+		HTTP:       httpClient,
 		TelegramID: telegramID,
 		Username:   username,
 	}
@@ -51,7 +51,7 @@ func (c *Client) request(method, path string, body any, out any) error {
 	req.Header.Set("X-Telegram-User-Id", fmt.Sprintf("%d", c.TelegramID))
 	req.Header.Set("X-Telegram-Username", c.Username)
 
-	resp, err := c.HttpClient.Do(req)
+	resp, err := c.HTTP.Do(req)
 	if err != nil {
 		return err
 	}
@@ -77,7 +77,7 @@ func (c *Client) request(method, path string, body any, out any) error {
 //////////////////////////////////////
 
 // POST /v1/files  (init upload)
-func (c *Client) CreateUpload(req UploadFileRequest) (*UploadFileResponse, error) {
+func (c *Client) UploadFile(req UploadFileRequest) (*UploadFileResponse, error) {
 	var out UploadFileResponse
 	err := c.request("POST", "/v1/files", req, &out)
 	return &out, err
@@ -91,7 +91,7 @@ func (c *Client) ReportComplete(id int64, req ReportUploadCompleteRequest) (*Rep
 }
 
 // GET /v1/files
-func (c *Client) GetMyFiles() ([]File, error) {
+func (c *Client) ListFiles() ([]File, error) {
 	var out []File
 	err := c.request("GET", "/v1/files", nil, &out)
 	return out, err
@@ -154,7 +154,7 @@ func (c *Client) DownloadShare(id int64, headers map[string]string) ([]byte, str
 		req.Header.Set(k, v)
 	}
 
-	resp, err := c.HttpClient.Do(req)
+	resp, err := c.HTTP.Do(req)
 	if err != nil {
 		return nil, "", err
 	}
@@ -184,10 +184,10 @@ func (c *Client) RevokeShare(id int64) (*ShareRevokeResponse, error) {
 
 //	USER
 //
-// GET /v1/me
+// GET /api/me
 func (c *Client) GetMe() (*User, error) {
 	var out User
-	err := c.request("GET", "/v1/me", nil, &out)
+	err := c.request("GET", "/api/me", nil, &out)
 	return &out, err
 }
 

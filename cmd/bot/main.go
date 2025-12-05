@@ -18,8 +18,8 @@ func main() {
 	// Create API client (NO MORE ForBot)
 	client := api.NewClient(
 		config.C.BackendAPIBase,
-		0,          // bot không có telegramID
-		"telegram", // username tạm
+		0,
+		"telegram",
 		nil,
 	)
 
